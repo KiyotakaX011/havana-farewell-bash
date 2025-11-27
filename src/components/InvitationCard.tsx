@@ -131,11 +131,11 @@ const InvitationCard = () => {
               <div className="text-foreground">
                 <p className="font-bold text-lg">Rohit Singh</p>
                 <a
-                  href="tel:7819037576"
+                  href="tel:+917819037576"
                   className="flex items-center gap-2 text-neon-cyan hover:text-neon-pink transition-colors"
                 >
                   <Phone className="w-4 h-4" />
-                  7819037576
+                  +91 78190 37576
                 </a>
               </div>
               <div className="text-foreground">
@@ -158,13 +158,15 @@ const InvitationCard = () => {
             transition={{ delay: 0.9 }}
             className="text-center"
           >
-            <Button
-              variant="neon"
-              size="lg"
-              className="text-lg px-12 py-6 rounded-full font-bold uppercase tracking-wider"
-            >
-              Reserve Your Spot
-            </Button>
+            <a href="https://wa.me/917819037576?text=Count%20me%20in!" target="_blank" rel="noopener noreferrer">
+              <Button
+                variant="neon"
+                size="lg"
+                className="text-lg px-12 py-6 rounded-full font-bold uppercase tracking-wider"
+              >
+                Reserve Your Spot
+              </Button>
+            </a>
           </motion.div>
 
           {/* Footer text */}
