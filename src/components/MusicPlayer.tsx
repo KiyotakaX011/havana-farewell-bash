@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { motion } from "framer-motion";
@@ -10,20 +11,22 @@ const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState([70]);
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const animationRef = useRef<number>();
   const analyserRef = useRef<AnalyserNode>();
   const audioContextRef = useRef<AudioContext>();
 
-  // Volume Sync
+  // update volume
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume[0] / 100;
     }
   }, [volume]);
 
-  // Cleanup
+  // cleanup
   useEffect(() => {
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
@@ -31,7 +34,6 @@ const MusicPlayer = () => {
     };
   }, []);
 
-  // Setup audio visualizer
   const setupAudioContext = () => {
     if (!audioContextRef.current && audioRef.current) {
       const audioContext = new AudioContext();
@@ -49,7 +51,6 @@ const MusicPlayer = () => {
     }
   };
 
-  // Visualizer canvas drawing
   const visualize = () => {
     if (!analyserRef.current || !canvasRef.current) return;
 
@@ -67,18 +68,30 @@ const MusicPlayer = () => {
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const barWidth = (canvas.width / bufferLength) * 2.2;
+      const barWidth = (canvas.width / bufferLength) * 2.5;
       let x = 0;
 
       for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * canvas.height * 0.7;
+        const barHeight =
+          (dataArray[i] / 255) * canvas.height * 0.8;
 
-        const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
+        const gradient = ctx.createLinearGradient(
+          0,
+          canvas.height - barHeight,
+          0,
+          canvas.height
+        );
+
         gradient.addColorStop(0, "hsl(var(--neon-cyan))");
         gradient.addColorStop(1, "hsl(var(--neon-pink))");
 
         ctx.fillStyle = gradient;
-        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        ctx.fillRect(
+          x,
+          canvas.height - barHeight,
+          barWidth,
+          barHeight
+        );
 
         x += barWidth + 1;
       }
@@ -87,7 +100,6 @@ const MusicPlayer = () => {
     draw();
   };
 
-  // Play Pause
   const togglePlay = () => {
     if (!audioRef.current) return;
 
@@ -97,10 +109,10 @@ const MusicPlayer = () => {
       setupAudioContext();
       audioRef.current.play();
     }
+
     setIsPlaying(!isPlaying);
   };
 
-  // Mute
   const toggleMute = () => {
     if (audioRef.current) {
       audioRef.current.muted = !isMuted;
@@ -113,15 +125,14 @@ const MusicPlayer = () => {
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 1.2, duration: 0.5 }}
-      className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl 
-                 border-t border-neon-cyan/30 shadow-[0_-4px_30px_rgba(0,255,255,0.2)] z-50"
+      className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl border-t border-neon-cyan/30 shadow-[0_-4px_30px_rgba(0,255,255,0.2)] z-50"
     >
-      <div className="container mx-auto px-3 py-2">
-        <div className="flex items-center gap-4">
-
-          {/* 🎵 Smaller CD Artwork */}
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center gap-6">
+          
+          {/* CD Artwork */}
           <motion.div
-            className="relative w-10 h-10 flex-shrink-0"
+            className="relative w-16 h-16 flex-shrink-0"
             animate={{ rotate: isPlaying ? 360 : 0 }}
             transition={{
               duration: 3,
@@ -129,44 +140,44 @@ const MusicPlayer = () => {
               ease: "linear",
             }}
           >
-            <div className="w-full h-full rounded-full bg-gradient-to-br from-neon-cyan via-primary to-neon-pink shadow-md">
-              <div className="absolute inset-1 bg-background rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-gradient-to-br from-neon-pink to-neon-cyan" />
+            <div className="w-full h-full rounded-full bg-gradient-to-br from-neon-cyan via-primary to-neon-pink shadow-[0_0_20px_rgba(0,255,255,0.5)]">
+              <div className="absolute inset-2 bg-background rounded-full flex items-center justify-center">
+                <div className="w-4 h-4 rounded-full bg-gradient-to-br from-neon-pink to-neon-cyan" />
               </div>
             </div>
           </motion.div>
 
-          {/* ▶️ Play Button */}
+          {/* Controls */}
           <Button
             variant="ghost"
             size="icon"
             onClick={togglePlay}
-            className="w-10 h-10 rounded-full bg-neon-cyan/20 hover:bg-neon-cyan/30 border border-neon-cyan/50"
+            className="w-12 h-12 rounded-full bg-neon-cyan/20 hover:bg-neon-cyan/30 border border-neon-cyan/50"
           >
             {isPlaying ? (
-              <Pause className="w-4 h-4 text-neon-cyan" />
+              <Pause className="w-5 h-5 text-neon-cyan" />
             ) : (
-              <Play className="w-4 h-4 text-neon-cyan" />
+              <Play className="w-5 h-5 text-neon-cyan" />
             )}
           </Button>
 
-          {/* 🔊 Visualizer */}
-          <div className="flex-1 h-10 flex items-center">
+          {/* Visualizer */}
+          <div className="flex-1 h-16 flex items-center">
             <canvas
               ref={canvasRef}
-              width={500}
-              height={40}
+              width={800}
+              height={64}
               className="w-full h-full"
             />
           </div>
 
-          {/* 🔉 Volume */}
-          <div className="flex items-center gap-3 w-24">
+          {/* Volume */}
+          <div className="flex items-center gap-3 flex-shrink-0 w-32">
             <Button
               variant="ghost"
               size="icon"
               onClick={toggleMute}
-              className="w-7 h-7"
+              className="w-8 h-8"
             >
               {isMuted ? (
                 <VolumeX className="w-4 h-4 text-muted-foreground" />
@@ -183,13 +194,16 @@ const MusicPlayer = () => {
               className="flex-1"
             />
           </div>
+        </div>
 
-          {/* ⭐ Logo (small) */}
+        {/* Song Title */}
+        <div className="flex flex-col items-center gap-2 mt-2">
           <img
             src={brandNewLogo}
             alt="Brand New"
-            className="w-6 h-6 object-contain opacity-80"
+            className="w-8 h-8 object-contain"
           />
+          <p className="text-sm text-neon-cyan font-semibold">Brand New!</p>
         </div>
       </div>
 
@@ -198,56 +212,7 @@ const MusicPlayer = () => {
   );
 };
 
-export default MusicPlayer;      animationRef.current = requestAnimationFrame(draw);
-      
-      analyserRef.current!.getByteFrequencyData(dataArray);
-
-      ctx.fillStyle = "rgba(0, 0, 0, 0)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const barWidth = (canvas.width / bufferLength) * 2.5;
-      let x = 0;
-
-      for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
-        
-        const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
-        gradient.addColorStop(0, "hsl(var(--neon-cyan))");
-        gradient.addColorStop(1, "hsl(var(--neon-pink))");
-        
-        ctx.fillStyle = gradient;
-        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-
-        x += barWidth + 1;
-      }
-    };
-
-    draw();
-  };
-
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      setupAudioContext();
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  return (
-    <motion.div
-      initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+export default MusicPlayer;      animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 1.2, duration: 0.5 }}
       className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl border-t border-neon-cyan/30 shadow-[0_-4px_30px_rgba(0,255,255,0.2)] z-50"
     >
