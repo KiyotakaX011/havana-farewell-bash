@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
 import audioFile from "@/assets/seedhemaut.mp3";
+import brandNewLogo from "@/assets/brand-new-logo.png";
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -190,8 +191,13 @@ const MusicPlayer = () => {
         </div>
 
         {/* Song Title */}
-        <div className="text-center mt-2">
-          <p className="text-sm text-neon-cyan font-semibold">Seedhe Maut</p>
+        <div className="flex flex-col items-center gap-2 mt-2">
+          <img 
+            src={brandNewLogo} 
+            alt="Brand New" 
+            className="w-8 h-8 object-contain"
+          />
+          <p className="text-sm text-neon-cyan font-semibold">Brand New!</p>
         </div>
       </div>
 
