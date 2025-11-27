@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, MapPin, Calendar, DollarSign, Sparkles } from "lucide-react";
-import MusicPlayer from "./MusicPlayer";
 
 const InvitationCard = () => {
   const floatingAnimation = {
@@ -182,7 +181,6 @@ const InvitationCard = () => {
         </div>
       </motion.div>
 
-      <MusicPlayer />
     </div>
   );
 };
